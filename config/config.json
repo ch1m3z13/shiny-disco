@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "along_user",
+    "password": "password",
+    "database": "along_db",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "along_user",
+    "password": "password",
+    "database": "along_db",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "along_user",
+    "password": "password",
+    "database": "along_db",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
