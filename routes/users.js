@@ -1,5 +1,5 @@
 const express = require('express');
-const { getUserProfile, updateUserProfile, updateProfilePicture, submitDriverDetails } = require('../controllers/userController');
+const { getUserProfile, updateUserProfile, updateProfilePicture, submitDriverDetails, submitHomeAndWorkDetails } = require('../controllers/userController');
 const authenticate = require('../middlewares/authenticate'); 
 const upload = require('../middlewares/upload');
 
@@ -15,8 +15,10 @@ router.get('/profile', authenticate, getUserProfile);
 
 router.put('/profile', authenticate, updateUserProfile);
 
-router.put('/submit-driver-details', authenticate, driverDetailsUpload, submitDriverDetails)
+router.put('/submit-driver-details', authenticate, driverDetailsUpload, submitDriverDetails);
 
 router.put('/profile-picture', authenticate, upload.single('profile_picture'), updateProfilePicture);
+
+router.put('/submit-home-work-locations', authenticate, submitHomeAndWorkDetails);
 
 module.exports = router;

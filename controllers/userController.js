@@ -132,4 +132,34 @@ const updateProfilePicture = async (req, res) => {
     }
 };
 
-module.exports = { getUserProfile, updateUserProfile, updateProfilePicture, submitDriverDetails };
+const submitHomeAndWorkDetails = async (req, res) => {
+    const { home_location, work_location } = req.body;
+    const userId = req.user.id;
+    
+   try {
+
+        if (!home_location || !work_location) {
+            return res.status(400).json({ message: 'All fields are required!' });
+        }
+
+        const user = await User.findByPk(userId);
+        if(!user) {
+            return res.status(400).json({ message: 'User not found!' });
+        }
+
+        user.home_location = home_location;
+        user.work_location = work_location;
+
+        await user.save();
+
+        return res.status(200).json({ message: 'Home and Work details saved', user: {
+            home_location: user.home_location,
+            work_location: user.work_location
+        }});
+   } catch (error) {
+        console.error(error);
+        return res.status(500).json({ mesasge: 'server error', error: error.mesasge });
+   }
+};
+
+module.exports = { getUserProfile, updateUserProfile, updateProfilePicture, submitDriverDetails, submitHomeAndWorkDetails };
