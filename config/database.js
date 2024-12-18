@@ -1,15 +1,29 @@
-// config/database.js
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+let sequelize;
+
+if (process.env.NODE_ENV === 'production') {
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
-    logging: true,
+    logging: false,
     dialectOptions: {
-        ssl: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: true
+      }
+    }
+  });
+} else { 
+    sequelize = new Sequelize(process.env.DATABASE_URL, {
+        dialect: 'postgres',
+        logging: true,
+        dialectOptions: {
+          ssl: {
             require: true,
             rejectUnauthorized: false
+          }
         }
-      }
-});
+      });
+}
 
 module.exports = sequelize;
