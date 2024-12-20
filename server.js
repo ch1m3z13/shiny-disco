@@ -3,7 +3,6 @@ const express = require('express');
 const sequelize = require('./config/database'); 
 const bodyParser = require('body-parser');
 const cors = require('cors');
-//const db = require('./db');
 const authRoutes = require('./routes/auth'); 
 const userRoutes = require('./routes/users'); 
 const rideRoutes = require('./routes/rides'); 
@@ -33,18 +32,20 @@ app.use((err, req, res, next) => {
 //});
 
 sequelize.sync({ force: false }).then(() => { 
-    const PORT = process.env.PORT || 3000;
+    const PORT = process.env.PORT || 8080;
     console.log('Database synchronized');
-    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }).catch((error) => {
     console.error('Unable to connect to the database:', error);
+    process.exit(1);
 });
 
 
-process.on('SIGINT', async () => {
+/* process.on('SIGINT', async () => {
     console.log('Shutting down gracefully...');
     await db.end(); 
     process.exit(0);
 });
+*/
 
 module.exports = app;
