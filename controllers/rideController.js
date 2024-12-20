@@ -9,22 +9,21 @@ const sendNotificationToDriver = require('../services/notifications');
 const createRide = async (req, res) => {
     const { driver_id, origin, destination, departure_time, seats_available } = req.body;
 
-    // Validate input
     if (!driver_id || !origin || !destination || !departure_time || seats_available == null) {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
-    // Origin and destination should be objects with latitude and longitude properties
+   
     if (!origin.latitude || !origin.longitude || !destination.latitude || !destination.longitude) {
         return res.status(400).json({ message: 'Invalid origin or destination coordinates' });
     }
 
     try {
-        // Format origin and destination points as PostgreSQL POINT type
+        
         const originPoint = { type: 'Point', coordinates: [origin.longitude, origin.latitude] };
         const destinationPoint = { type: 'Point', coordinates: [destination.longitude, destination.latitude] };
 
-        // Create route as LINESTRING from origin to destination
+        
         const routeLineString = {
             type: 'LineString',
             coordinates: [
@@ -33,7 +32,7 @@ const createRide = async (req, res) => {
             ]
         };
 
-        // Insert new ride in the database
+        
         const newRide = await Ride.create({
             driver_id,
             origin: originPoint,
@@ -57,20 +56,20 @@ const createRide = async (req, res) => {
 const searchRides = async (req, res) => {
     const { origin, destination } = req.body;
 
-    // Check that origin and destination are provided as coordinates
+    
     if (!origin || !origin.latitude || !origin.longitude || !destination || !destination.latitude || !destination.longitude) {
         return res.status(400).json({ message: 'Invalid origin or destination coordinates' });
     }
 
     try {
-        // Format origin and destination points
+       
         const passengerOriginPoint = Sequelize.fn('ST_GeomFromText', `POINT(${origin.longitude} ${origin.latitude})`, 4326);
         const passengerDestinationPoint = Sequelize.fn('ST_GeomFromText', `POINT(${destination.longitude} ${destination.latitude})`, 4326);
 
-        // Set a tolerance for proximity in degrees (e.g., 0.01 ~ roughly 1.1 km)
+        
         const proximityTolerance = 0.01;
 
-        // Find rides where the driver's route contains the passenger's route or intersects with it
+       
         const matchingRides = await Ride.findAll({
             where: Sequelize.and(
                 Sequelize.where(
@@ -100,7 +99,7 @@ const matchRides = async (req, res) => {
     }
 
     try {
-        // Create LineString for passenger's route
+        
         const passengerRoute = `LINESTRING(${origin.longitude} ${origin.latitude}, ${destination.longitude} ${destination.latitude})`;
 
         const matchedRides = await db.query(

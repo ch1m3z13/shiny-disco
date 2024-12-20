@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const db = require('../config/database');
+// const db = require('../db');
 const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/User');
 require('dotenv').config();
@@ -106,17 +106,25 @@ const googleLogin = async (req, res) => {
         const { email, name } = ticket.getPayload();
 
 
-        const existingUser = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+        const existingUser = await User.findOne({
+            where: { email },
+        });
         let user;
 
         if (existingUser.rows.length > 0) {
             user = existingUser.rows[0];
         } else {
             
-            user = await db.query(
+          /*  user = await db.query(
                 'INSERT INTO users (email, name) VALUES ($1, $2) RETURNING *',
                 [email, name]
             );
+        */
+
+            user = await User.create({
+                email: email,
+                first_name: name,
+            });
         }
 
         
